@@ -1,0 +1,232 @@
+\documentclass[11pt]{beamer}
+
+      \usepackage{hyperref}
+
+      \usepackage{color}
+
+      \usepackage{amsmath}
+
+      \usepackage{listings}
+      \lstset{numbers=none,language=[ISO]C++,tabsize=4,
+  frame=single,
+  basicstyle=\small,
+  showspaces=false,showstringspaces=false,
+  showtabs=false,
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{red},
+  }
+
+      \usepackage{verbatim}
+
+\usepackage{fixltx2e}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{soul}
+\usepackage{textcomp}
+\usepackage{marvosym}
+\usepackage{wasysym}
+\usepackage{latexsym}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\tolerance=1000
+\usepackage{minted}
+\providecommand{\alert}[1]{\textbf{#1}}
+
+\title{module3}
+\author{gar}
+\date{}
+\hypersetup{
+  pdfkeywords={},
+  pdfsubject={},
+  pdfcreator={Emacs Org-mode version 7.9.3f}}
+
+\begin{document}
+
+\maketitle
+
+\begin{frame}
+\frametitle{Outline}
+\setcounter{tocdepth}{3}
+\tableofcontents
+\end{frame}
+\section{Functions, Arrays and Strings}
+\label{sec-1}
+\begin{frame}[fragile]\frametitle{Arrays}
+\label{sec-1-1}
+
+\begin{itemize}
+\item Collection of elements of same data type
+\item When declaring, square brackets are used to indicate that data is an array
+\begin{itemize}
+\item E.g. If marks of 10 students are to be stored
+
+\begin{minted}[]{C}
+int marks[10];
+\end{minted}
+\item To get the marks of first student
+
+\begin{minted}[]{C}
+printf("%d\n", a[0]);
+\end{minted}
+\item To set the marks of the 10$^{\mathrm{th}}$ student as 65
+
+\begin{minted}[]{C}
+a[9] = 65;
+\end{minted}
+\item We may also declare an array of roll numbers, to know who the n$^{\mathrm{th}}$ student is
+
+\begin{minted}[]{C}
+int rollno[10];
+\end{minted}
+\item It's also possible to logically group the \verb~rollno~ and \verb~marks~ as a structure, which is a topic of module 4
+\end{itemize}
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Concept of an Array}
+\label{sec-1-2}
+
+\begin{itemize}
+\item Each number 0, 1, 2 \ldots{} 9 is called \textbf{subscript} or \textbf{index}
+\item Square brackets are used for indexing
+\item Indexing starts from 0 and goes up to \emph{n}-1, where \emph{n} is the maximum size reserved for an array
+\item Initializing an array 
+
+\begin{minted}[]{C}
+int a[5] = {-2,-1,0,1,2};
+\end{minted}
+\begin{itemize}
+\item Can also be set individually after declaring
+
+\begin{minted}[]{C}
+int a[5];
+a[0] = -2;
+a[1] = -1;
+\end{minted}
+\end{itemize}
+
+\item If only one element is Initialized during declaration, all others will be set to zeroes
+
+\begin{minted}[]{C}
+int a[5] = {-2,-1};
+\end{minted}
+  is same as
+
+\begin{minted}[]{C}
+int a[5] = {-2,-1,0,0,0};
+\end{minted}
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Programming Example using Array}
+\label{sec-1-3}
+
+\begin{itemize}
+\item Read 5 floating point values to an array \verb~a~ and then compute the sum
+\end{itemize}
+
+\begin{minted}[]{C}
+main()
+{
+  float a[5], sum = 0;
+  int i;
+  for (i=0; i<5; i++)
+    scanf("%f", &a[i]);
+  for (i=0; i<5; i++)
+    sum += a[i];
+}
+\end{minted}
+
+\begin{itemize}
+\item Extend it to find
+\begin{enumerate}
+\item Mean = $\overline{a}$ = $\dfrac{\sum_{i=0}^4 a_i}{5}$
+\item Variance = $\sigma$$^2$ =  $\dfrac{\sum_{i=0}^4\left(a_i - \overline{a}\right)^2}{5}$
+\end{enumerate}
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Array of \emph{char}}
+\label{sec-1-4}
+
+\begin{itemize}
+\item Array of characters is also called a string
+\item Each element can store the ASCII code of the character
+\item Every string must end with a null character, which is \verb~\0~
+\begin{itemize}
+\item When printing the string, all the characters till \verb~\0~ will be printed
+\end{itemize}
+\item E.g.
+
+\begin{minted}[]{C}
+char quote1[20] = "Hello";
+char quote2[20] = {'H','e','l','l','o','\0'};
+char quote3[20];
+quote3[0] = 'H';
+quote3[1] = 'e';
+quote3[2] = 'l';
+quote3[3] = 'l';
+quote3[4] = 'o';
+quote3[5] = '\0';
+\end{minted}
+\item \verb~quote1~ and \verb~quote2~ mean exactly the same. But in \verb~quote3~, we need to specify the null character explicitly
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Printing and Reading Strings}
+\label{sec-1-5}
+
+\begin{itemize}
+\item Use the conversion specifier \verb~%s~ when reading and printing
+
+\begin{minted}[]{C}
+printf("%s", quote1);
+\end{minted}
+\item \verb~&~ operator is not required in this case, since specifying the array name implies the address of the string. 
+
+\begin{minted}[]{C}
+scanf("%s", quote2);
+\end{minted}
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Function}
+\label{sec-1-6}
+
+\begin{itemize}
+\item Provides a convenient way to encapsulate a computation
+\item Can later be used without worrying about its implementation
+\begin{itemize}
+\item \verb~printf()~, \verb~sqrt()~ etc.
+\end{itemize}
+\item E.g. Define a function to calculate power ($x^y$)
+
+\begin{minted}[]{C}
+int power(int x, int y)
+{
+  int i, p = 1;
+  for (i = 1; i <= y; i++)
+    p = p*x;
+  return p;
+}
+\end{minted}
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Syntax of function definition}
+\label{sec-1-7}
+
+\begin{verbatim}
+return-type function-name(parmeter declarations, if any)
+{
+  declarations 
+  statements
+}
+\end{verbatim}
+
+\begin{itemize}
+\item Function definitions may appear
+\begin{itemize}
+\item in any order
+\item in one source file or several
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\end{document}

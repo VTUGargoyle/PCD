@@ -1,0 +1,360 @@
+#+latex_class: beamer
+* Structures and File Management
+** Structure
+- Used to group data values which are heterogeneous, and the data are related an entity
+  - Array groups homogeneous data
+- Structure is declared using ~struct~ data type
+- E.g. To store a student name, roll number and branch, a structure can be defined as:
+  #+BEGIN_SRC C
+  struct student {
+    char name[20];
+    int rollno;
+    char branch[20];
+  };
+  #+END_SRC
+- ~name~, ~rollno~ and ~branch~ are called the /members/ of the structure, which can be of any data type
+
+** General Form of ~struct~ definition
+#+BEGIN_SRC C
+struct struct_tag {
+  type_1 var_1;
+  type_2 var_2;
+  .
+  .
+  type_n var_n;
+} structvar1, structvar2;
+#+END_SRC
+
+** Accessing members of a structure
+- A dot operator is used to access the members
+- E.g. consider a struct ~point~ used to store x and y coordinates of a point:
+  #+BEGIN_SRC C
+  struct point {
+    int x;
+    int y;
+  };
+  #+END_SRC
+- Declare and initialize a variable ~p~ 
+  #+BEGIN_SRC C
+  struct point p = {1,2};
+  #+END_SRC
+- To print value x of p
+  #+BEGIN_SRC C
+  printf("%d\n", p.x);
+  #+END_SRC
+- To set a new value of x
+  #+BEGIN_SRC C
+  p.x = 5;
+  #+END_SRC
+
+** Questions
+1. Define a structure ~book~, which must store the title of the book, author name, year of publication and the publisher's name
+2. Define a structure ~rectangle~, which stores two ~point~ structures (nested structure), to indicate the bottom left and top right points of a rectangle
+
+** Nested Structure
+- Defining a ~rectangle~ structure (initializing and accessing the values)
+
+#+BEGIN_SRC C
+struct rectangle {
+    struct point p1; /* bottom-left */
+    struct point p2; /* top-right */
+};
+
+int main()
+{
+    struct rectangle r = {{1,2},{5,5}};
+    printf("%d %d\n", r.p1.x, r.p1.y);
+    printf("%d %d\n", r.p2.x, r.p2.y);
+}
+#+END_SRC
+
+** Array of Structures
+- Array of struct data type is also possible: 
+ - E.g. 
+   #+BEGIN_SRC C
+   struct point p[10];
+   #+END_SRC
+   declares an array of 10 points, and reading of the data can be done using dot operator
+   #+BEGIN_SRC C
+   for (i=0; i<10; i++)
+     scanf("%d%d", &p[i].x, &p[i].y);
+   #+END_SRC
+
+** Structure and Function
+- When passing a structure to a function, it's passed by value instead of reference
+- Changing values in the called function will not change the structure variables in the calling function
+- E.g.
+  #+BEGIN_SRC C
+  void set(struct point p, int x, int y)
+  {
+    p.x = x;
+    p.y = y;
+  }
+  main()
+  {
+    struct point a;
+    set(a, x, y);
+  }
+  #+END_SRC
+  will not set the values of ~a~, since a copy of the structure is sent instead of the address
+
+** Structure and Function
+- To set the values of a structure, pass by reference and use ~->~ operator
+  #+BEGIN_SRC C
+  void set(struct point *p, int x, int y)
+  {
+    p->x = x; /* (*p).x = x; also is fine */
+    p->y = y;
+  }
+  main()
+  {
+    struct point a;
+    set(&a, x, y);
+  }  
+  #+END_SRC
+
+** Sending Array of Structures as Parameter
+#+BEGIN_SRC C
+struct candidate {
+    char name[50];
+    int age;
+};
+void read_data(struct candidate c[], int n)
+{
+    int i;
+    for (i=0; i<n; i++) {
+        scanf("%s", c[i].name);
+        scanf("%d", &c[i].age);
+    }
+}
+int main ()
+{
+    struct candidate cand[10];
+    read_data(cand, 2);
+    return 0;
+}
+#+END_SRC
+** Type Definitions
+- C provides a keyword ~typedef~ for creating new data type names
+- E.g. If we are going to use ~short int~ to store dimensions of rectangles, ~typedef~ can be used
+  #+BEGIN_SRC C
+  typedef short int Length;
+  #+END_SRC
+- Then we may use the data type ~Length~ instead of ~short int~
+  #+BEGIN_SRC C
+  Length h, w; /* represents height and width */
+  #+END_SRC
+- It depicts the intentions of the variables more clearly
+
+** Type Definitions
+- As another example, a structure can be typedef in two ways
+  #+BEGIN_SRC C
+  struct point {
+    int x;
+    int y;
+  };
+  typedef struct point Point;
+  #+END_SRC
+- or 
+  #+BEGIN_SRC C
+  typedef struct point {
+    int x;
+    int y;
+  } Point; /* In this case, point tag is optional */
+  #+END_SRC
+- We may use the new data type to declare point structures
+  #+BEGIN_SRC C
+  main()
+  {
+    Point p = {1,5};
+    ...
+  }
+  #+END_SRC
+
+** File Management
+- A file is a collection of data stored on disk
+- C provides with several functions to work with files
+- A file must be opened by using the function ~fopen~, which returns a pointer to the opened file
+  - it's called a /file pointer/
+
+** Opening a File
+- General form of a call to ~fopen~ is
+  #+BEGIN_SRC C
+  filepointer = fopen(filename, mode);
+  #+END_SRC
+- Example usage, to open a file ~names.txt~ in ~read-only~ mode:
+  #+BEGIN_SRC C
+  /* Opened in read-mode, other modes: "w", "a" */
+  FILE *fp = fopen("names.txt", "r"); 
+  if (fp == NULL)
+    printf("Error opening the file\n");
+  #+END_SRC
+- If the file is not found, or necessary permissions are not there for the program, a NULL pointer will be returned
+- Otherwise, a pointer to that file will be returned
+- "w" opens a file to write. If the file already exists, it will be overwritten, otherwise it will be created
+- "a" opens a file to append. If the file already exists, it will append output to end of the file, otherwise it will be created
+
+** Output using fprintf
+- General form:
+  #+BEGIN_SRC C
+  fprintf(destfile, "format string", list of variables);
+  #+END_SRC
+- Sending output to a file
+  #+BEGIN_SRC C
+  FILE *fo;
+  int num = 119;
+  
+  fo = fopen("nums.txt", "w"); 
+  if (fo != NULL)
+    fprintf(fo, "%d\n", num);
+  #+END_SRC
+** Input using fscanf
+- General form
+  #+BEGIN_SRC C
+  fscanf(sourcefile, "format string", list of variables);
+  #+END_SRC
+- Receiving input from a file
+  #+BEGIN_SRC C
+  FILE *fi;
+  int num;
+  
+  fi = fopen("nums.txt", "r");
+  if (fi != NULL)
+    fscanf(fi, "%d", &num);
+  #+END_SRC
+- This reads a number from the file ~nums.txt~ and stores in the variable num
+
+** ~stdin~ and ~stdout~
+- ~stdin~ is called an input stream (standard input) and ~stdout~ is the output stream (standard output)
+- The two statements below mean the same
+  #+BEGIN_SRC C
+  fscanf(stdin, "%d", &num);
+  scanf("%d", &num);
+  #+END_SRC
+- Similarly, the two statements below mean the same
+  #+BEGIN_SRC C
+  fprintf(stdout, "%d", num);
+  printf("%d", num);  
+  #+END_SRC
+- Every program is provided with these pointers by default
+- Another stream is available, which is called ~stderr~, mainly used for redirecting error and diagnostic messages
+
+** Closing files
+- After a file is used, it must be closed
+- It's general form is
+  #+BEGIN_SRC C
+  fclose(filepointer);
+  #+END_SRC
+
+** String input from a file
+  #+BEGIN_SRC C
+  strptr = fgets(inputarea, n, source);
+  #+END_SRC
+- Example
+  #+BEGIN_SRC C
+  char inarea[15];
+  char *instring;
+  
+  instring = fgets(inarea, 15, stdin);
+  #+END_SRC
+- fgets reads at most 14 characters, then appends one NULL character
+ - If the entered string is : "Hello, world string"
+ - The string stored will be
+   #+attr_latex: align=|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|
+   |---+---+---+---+---+---+---+---+---+---+---+---+---+---+-------------------|
+   | H | e | l | l | o | , |   | w | o | r | l | d |   | s | \textbackslash 0  |
+   |---+---+---+---+---+---+---+---+---+---+---+---+---+---+-------------------|
+
+# - ~stdin~ means standard input, i.e. a terminal instead of some file
+
+
+** String output to a file
+- General form
+  #+BEGIN_SRC C
+  fputs(string, destfile);
+  #+END_SRC
+- Example: echoing back whatever is typed
+  #+BEGIN_SRC C
+  char inarea[20];
+  char *instring;
+  
+  instring = fgets(inarea, 20, stdin);
+  while (instring != NULL) {
+    fputs(instring, stdout);
+    instring = fgets(inarea, 20, stdin);
+  }
+  #+END_SRC
+
+** File I/O for characters: fgetc
+- General form of ~fgetc~
+  #+BEGIN_SRC C
+  ch = fgetc(source);
+  #+END_SRC
+- Reads character from a file pointed by source 
+- Returns character converted to ~int~, or ~EOF~ at the end of file
+
+** File I/O for characters: fputc
+- General form of ~fputc~
+  #+BEGIN_SRC C
+  fputc(ch, destfile);
+  #+END_SRC
+- ~ch~ is a character, and ~destfile~ is a pointer to a file or stdout
+
+** Example Programs
+1. Write a program to replace all the letter 'a' with letter 'A', where the text is read from "indata.txt" and the output is stored in "outdata.txt"
+2. Write a program to count the number of full stops and commas in the file named "howmany.txt", and display the result in the terminal
+
+** Program 1
+#+latex: {\scriptsize 
+#+BEGIN_SRC C
+#include <stdio.h>
+
+int main()
+{
+    FILE *fi = fopen("indata.txt", "r");
+    FILE *fo = fopen("outdata.txt", "w");
+    int ch;
+    if (fo != NULL) {
+        ch = fgetc(fi);
+        while (ch != EOF) {
+            if (ch == 'a') {
+                fputc('A', fo);
+            } else {
+                fputc(ch, fo);
+            }
+            ch = fgetc(fi);
+        }
+    }
+    fclose(fi);
+    fclose(fo);
+    return 0;
+}
+#+END_SRC
+#+latex: }
+
+** Program 2
+#+latex: {\scriptsize 
+#+BEGIN_SRC C
+#include <stdio.h>
+
+int main()
+{
+    FILE *fi;
+    int comma = 0, dots = 0, ch;
+    fi = fopen("howmany.txt", "r");
+    if (fi != NULL) {
+        ch = fgetc(fi);
+        while (ch != EOF) {
+            if (ch == '.')
+                dots++;
+            if (ch == ',')
+                comma++;
+            ch = fgetc(fi);
+        }
+    }
+    fclose(fi);
+    printf("commas: %d, full stops: %d\n", comma, dots);
+    return 0;
+}
+#+END_SRC
+#+latex: }

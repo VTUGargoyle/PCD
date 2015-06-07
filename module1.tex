@@ -1,0 +1,580 @@
+\documentclass[11pt]{beamer}
+
+      \usepackage{hyperref}
+
+      \usepackage{color}
+
+      \usepackage{amsmath}
+
+      \usepackage{listings}
+      \lstset{numbers=none,language=[ISO]C++,tabsize=4,
+  frame=single,
+  basicstyle=\small,
+  showspaces=false,showstringspaces=false,
+  showtabs=false,
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{red},
+  }
+
+      \usepackage{verbatim}
+
+\usepackage{fixltx2e}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{soul}
+\usepackage{textcomp}
+\usepackage{marvosym}
+\usepackage{wasysym}
+\usepackage{latexsym}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\tolerance=1000
+\usepackage{minted}
+\providecommand{\alert}[1]{\textbf{#1}}
+
+\title{module1}
+\author{gar}
+\date{}
+\hypersetup{
+  pdfkeywords={},
+  pdfsubject={},
+  pdfcreator={Emacs Org-mode version 7.9.3f}}
+
+\begin{document}
+
+\maketitle
+
+\begin{frame}
+\frametitle{Outline}
+\setcounter{tocdepth}{3}
+\tableofcontents
+\end{frame}
+\section{Introduction to C Programming}
+\label{sec-1}
+\begin{frame}[fragile]\frametitle{Extras -- Introduction to Unix-like OSes}
+\label{sec-1-1}
+
+Useful commands
+\begin{itemize}
+\item \verb~man~: This is a command to know about other commands. E.g. \verb~man ls~ gives the manual of the \verb~ls~ command.
+\item \verb~ls~ : List contents in current directory (folder)
+\item \verb~cal~: Display the calendar
+\item \verb~rm~: Remove (delete) any file
+\item \verb~mv~: Move a file from one location to another, also useful for renaming files
+\item and many more -- explore the directories \verb~/bin~ and \verb~/usr/bin~
+\end{itemize}
+
+
+
+
+  
+\end{frame}
+\begin{frame}[fragile]\frametitle{Extras -- Getting started with C}
+\label{sec-1-2}
+
+\begin{itemize}
+\item C is a general-purpose programming language
+\item Used mainly for implementing Operating Systems, and application softwares for computers/embedded systems
+\item Developed by Dennis Ritchie and used to re-implement the Unix OS
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Basic Structure of a C Program}
+\label{sec-1-3}
+
+
+\begin{verbatim}
+Preprocessor Directives 
+
+Global Declarations
+
+main()
+{
+  Local Declarations
+
+  Statements
+}
+
+User defined functions
+\end{verbatim}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Basic Structure of a C Program}
+\label{sec-1-4}
+
+\begin{itemize}
+\item Print the words ``Hello, world!''
+
+
+\begin{minted}[]{C}
+#include <stdio.h> /* include information about the 
+                    standard input/output library */
+int main() /* define function named main 
+           and returns an integer */
+{
+    printf("Hello, world!\n"); /* prints the words, 
+                       \n is the newline character */
+    return 0;         /* The value 0 is returned 
+                       to the OS on completion    */
+}
+\end{minted}
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Extras -- Getting started with C}
+\label{sec-1-5}
+
+Code compilation:
+\begin{itemize}
+\item Compilation is a process of converting the source code to machine code
+\begin{itemize}
+\item i.e. converting from a human readable code to a code which machine understands
+\item The output will be a binary file (0's and 1's)
+\item They encode instructions regarding the action to be performed by the CPU (e.g. copy from one location to another, multiply two numbers etc.)
+\end{itemize}
+\end{itemize}
+Compiling and executing in linux:
+\begin{itemize}
+\item \verb~gcc hello.c~
+\item \verb~./a.out~
+\item Program consists of \emph{functions} and \emph{variables}
+\begin{itemize}
+\item functions contain \emph{statements} that specify operations to be done
+\item variables store the values used during the operation
+\end{itemize}
+\item The main function is the beginning of the execution
+\item That may call other functions
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Getting started}
+\label{sec-1-6}
+
+\begin{itemize}
+\item \begin{minted}[]{C}
+"Hello, world!\n"
+\end{minted}
+  is called a string constant
+\item \begin{minted}[]{C}
+printf("Hello, world!
+");
+\end{minted}
+  would cause an error
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Extras -- Comments and Programming Style}
+\label{sec-1-7}
+
+\begin{itemize}
+\item Comments are statements which describe the function of the code
+\begin{itemize}
+\item A single line comment (C++ style, not allowed in ANSI C standard) -- \verb~//~
+\item A multiline comment -- \verb~/* ... */~
+\item \verb~/*~ and \verb~*/~ are called the comment delimenters
+\end{itemize}
+\item All the characters within the comments are ignored during compilation
+\item Use an editor which supports
+\begin{itemize}
+\item syntax highlighting
+\item automatic indentation
+\item autocompletion
+\end{itemize}
+\item All these features will minimize the chances of errors and bugs
+\item e.g. emacs, geany, vi etc.
+\end{itemize}
+ 
+\end{frame}
+\begin{frame}[fragile]\frametitle{Variables and arithmetic expressions}
+\label{sec-1-8}
+
+\begin{itemize}
+\item Declaration statement declares a variable to be used in the program
+\begin{itemize}
+\item E.g. \verb~int num;~
+\end{itemize}
+\item Assignment statement
+\begin{itemize}
+\item E.g. \verb~int num = 4;~
+\item Value of 4 is assigned to a variable called \verb~num~
+\end{itemize}
+\item Increment the value of \verb~num~ by 2
+\begin{itemize}
+\item \verb~num = num + 2;~
+\item Don't think of it as a mathematical equation
+\item It means whatever value \verb~num~ contains, 2 will be added to it, and then stored back in \verb~num~
+\end{itemize}
+\end{itemize}
+\begin{itemize}
+\item To compute square of a number
+\begin{itemize}
+\item \verb~sqnum = num * num;~
+\end{itemize}
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Variable Names}
+\label{sec-1-9}
+
+\begin{itemize}
+\item Consists of letters (underscores allowed) and digits, must begin with a letter
+\item Usually lower case letters are used for variable names and all upper case for symbolic constants
+\item Keywords like \verb~if~, \verb~else~, \verb~int~, \verb~char~ etc. can't be used as variable names
+\item Use meaningful names to indicate the purpose of the variable
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Data Types and Sizes}
+\label{sec-1-10}
+
+
+\begin{center}
+\begin{tabular}{lp{9cm}}
+ \verb~char~    &  single byte capable of holding one character  \\
+ \verb~int~     &  an integer                                    \\
+ \verb~float~   &  single-precision floating point               \\
+ \verb~double~  &  double-precision floating point               \\
+\end{tabular}
+\end{center}
+
+
+
+Qualifiers:
+\begin{itemize}
+\item E.g.
+
+\begin{minted}[]{C}
+short int a;
+long int c;
+unsigned int d;
+\end{minted}
+\item \verb~short~ will modify the size taken by an \verb~int~. Instead of 32 bits, the integer will now be represented using 16 bits
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Constants}
+\label{sec-1-11}
+
+
+\begin{center}
+\begin{tabular}{|l|l|}
+ 1234          &  \verb~int~                          \\
+ 1234566789L   &  \verb~long~                         \\
+ 1234566789ul  &  \verb~unsigned long~                \\
+ 1.1 or 11e-1  &  \verb~double~                       \\
+ 0x3f          &  \verb~hexadecimal~                  \\
+ 037           &  \verb~octal~                        \\
+ `a'           &  character constant, ASCII value 97  \\
+\end{tabular}
+\end{center}
+
+
+\begin{itemize}
+\item ASCII -- American Standard Code for Information Interchange
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Constants}
+\label{sec-1-12}
+
+\begin{itemize}
+\item Constant expression:
+
+\begin{minted}[]{C}
+#define LEN 100
+char line[LEN+1];
+\end{minted}
+\item String constant or string literal
+
+\begin{minted}[]{C}
+"this is a string"
+\end{minted}
+\item can be concatenated at compile time:
+
+\begin{minted}[]{C}
+"this is" "a string"
+\end{minted}
+\item enumeration constant: 
+
+\begin{minted}[]{C}
+enum boolean {NO, YES};
+\end{minted}
+\item $\backslash$ followed by another character is called an escape sequence, 
+  which are translated to another character when used in a string literal
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Declarations}
+\label{sec-1-13}
+
+\begin{itemize}
+\item Declaration specifies a type, and a list of one or more variables of that type:
+
+\begin{minted}[]{C}
+int high, mid, low;
+char a,c;
+\end{minted}
+\item It can also be split into separate lines
+\item \verb~const~ qualifier specifies that its value will not be changed:
+
+\begin{minted}[]{C}
+const double e = 2.71828182845905;
+const char st[] = "Test String";
+\end{minted}
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Arithmetic Operators}
+\label{sec-1-14}
+
+\begin{itemize}
+\item \verb~x % y~ gives remainder when x is divided by y
+\item \verb~%~ can't be applied to float or double
+\item + and - have same precedence, but lower than * / and \verb~%~
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Relational and Logical operators}
+\label{sec-1-15}
+
+\begin{itemize}
+\item \verb~>, >=, <, <=~ have the same precedence
+\item Outcome is true or false, indicated by digits 1 or 0, respectively
+\item \verb~a < b+1~ means \verb~a < (b+1)~
+\item \verb~&&~ (logical AND) and \verb~||~ (logical OR) operations are evaluated left to right
+\item E.g. for \verb~int a = 1, b = 2;~ -- outputs for different cases are shown:
+\end{itemize}
+
+\begin{center}
+\begin{tabular}{|l|l|}
+ \verb~a > b~     &  0 (false)  \\
+ \verb~a < b~     &  1 (true)   \\
+ \verb~a+1 >= b~  &  1          \\
+\end{tabular}
+\end{center}
+
+
+\begin{itemize}
+\item Any non-zero (positive or negative) value is considered true
+\item For \verb~a=0, b=10~
+\end{itemize}
+
+\begin{center}
+\begin{tabular}{|l|l|}
+ \verb~a && b~                   &  0  \\
+ \verb~a~ $\vert\vert$ \verb~b~  &  1  \\
+\end{tabular}
+\end{center}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Type conversions}
+\label{sec-1-16}
+
+\begin{itemize}
+\item When an expression has operands of different types, they are converted to a common type
+\item Automatic conversions convert a narrower data type to a wider one or vice versa
+\begin{itemize}
+\item E.g. f = f + i;
+\item An implementation of \verb~atoi~ to convert a character string of digits to its numeric equivalent
+\end{itemize}
+\end{itemize}
+\begin{itemize}
+\item Type conversions can also be forced with a unary operator called a \emph{cast}
+  E.g. to convert `i' from an integer to a double, we may use \verb~(double)i~
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Type conversions}
+\label{sec-1-17}
+
+E.g.
+\begin{itemize}
+\item Implicit type conversion
+
+\begin{minted}[]{C}
+int i = 3, j;
+float f = 4.0;
+f = i+f;
+\end{minted}
+\begin{itemize}
+\item On the RHS, \verb~i~ is converted to float first, then addition is performed, and finally assigned to \verb~f~
+\item If \verb~i~ was on the LHS instead of \verb~f~, all the above steps occur, but during assignment the result is converted to an integer
+\end{itemize}
+\item Explicit type conversion (casting)
+\begin{itemize}
+\item This is useful when dealing with fractions having integer data type
+
+\begin{minted}[]{C}
+int i=11, j=12;
+float f=(float)i/j;
+\end{minted}
+\end{itemize}
+
+\begin{itemize}
+\item If we had left out `(float)', the result would have been 0
+\end{itemize}
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Extras -- Floating Point Representation}
+\label{sec-1-18}
+
+The \verb~float~ and \verb~double~ data types are represented using IEEE 754 floating point format
+\begin{itemize}
+\item \verb~float~ takes 32 bits of memory
+\item Its format is given by 
+
+\begin{center}
+\begin{tabular}{|p{1ex}|p{8ex}|p{23ex}|}
+\hline
+ S  &  E (8)  &  Mantissa (23)  \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\item Value is : $(-1)^{S} \times 2^{E-127}\times$ Mantissa
+\item \verb~double~ takes 64 bit of memory and the format is given below
+\end{itemize}
+
+\begin{center}
+\begin{tabular}{|p{1ex}|p{11ex}|p{42ex}|}
+\hline
+ S  &  E (11)  &  Mantissa (52)  \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\begin{itemize}
+\item Value is given by: $(-1)^{S}\times 2^{E-1023}\times$ Mantissa
+\item Search around for examples
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Increment and Decrement operators}
+\label{sec-1-19}
+
+\begin{itemize}
+\item \verb~++~ adds 1 to operand
+\item \verb~--~ subtracts 1 from the operand
+\item Can be used as postfix or prefix
+\item \verb~x++;~ and \verb~++x;~ is same as \verb~x = x+1;~
+\item The following table shows the difference when using the increment operator as a postfix and a prefix to the variable \verb~x~
+\end{itemize}
+
+\begin{center}
+\begin{tabular}{|p{5cm}|l|}
+\hline
+ Using increment operator  &  Equivalent statements  \\
+\hline
+ \verb~int x = 5;~         &  \verb~int x = 5;~      \\
+ \verb~int a = x++;~       &  \verb~int a = x;~      \\
+                           &  \verb~x = x+1;~        \\
+\hline
+ \verb~int x = 5;~         &  \verb~int x = 5;~      \\
+ \verb~int a = ++x;~       &  \verb~x = x+1;~        \\
+                           &  \verb~int a = x;~      \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\begin{itemize}
+\item The same applies to the decrement operator too
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Bitwise Operators}
+\label{sec-1-20}
+
+\begin{itemize}
+\item Has six operators for bit manipulation
+\end{itemize}
+
+\begin{center}
+\begin{tabular}{|l|l|}
+ \&         &  bitwise AND               \\
+ $\vert$    &  bitwise inclusive OR      \\
+ \verb~^~   &  bitwise exclusive OR      \\
+ \verb~<<~  &  left shift                \\
+ \verb~>>~  &  right shift               \\
+ \~{}       &  one's complement (unary)  \\
+\end{tabular}
+\end{center}
+
+
+\begin{itemize}
+\item \& masks of some bits
+\begin{itemize}
+\item \verb~n = n & 0177;~
+\item last 7 bits retain the previous values, all higher bits set to 0
+\end{itemize}
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Extras -- Experiment with debugger (gdb)}
+\label{sec-1-21}
+
+\begin{itemize}
+\item \verb~gdb~ is a standard debugger available in GNU/Linux systems
+\item A debugger can be used to pause a running program and check the state of program (values in variables, trace of functions called etc)
+\item Along with being a debugger, it can be used as a programmer's calculator
+\item Run \verb~gdb~ without arguments
+\item Set a variable in \verb~gdb~ and try all the operators
+\begin{itemize}
+\item \verb~(gdb) set $a = 10~
+\item \verb~(gdb) p/t $a~
+\item \verb,(gdb) p/t ~$a,
+\item \verb~(gdb) p/t $a&10~
+\end{itemize}
+\item \verb~/t~ is a switch to the print command which tells the debugger to display the variable in binary
+\item Other switches: \verb~/x~, \verb~/o~, \verb~/d~
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Assignment operators and expressions}
+\label{sec-1-22}
+
+\begin{itemize}
+\item Expressions where a variable on LHS is repeated immediately on the RHS can be written in a compact form
+\begin{itemize}
+\item \verb~i = i+2;~ $\implies$ \verb~i += 2;~
+\item \verb~+=~ is called an assignment operator
+\end{itemize}
+\item Thus
+
+   expr$_1$ op= expr$_2$ is equivalent to
+ 
+   expr$_1$ = (expr$_1$) op (expr$_2$)
+\begin{itemize}
+\item \verb~x *= y+1;~ means \verb~x = x * (y+1);~
+\end{itemize}
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Operator Precedence}
+\label{sec-1-23}
+
+
+
+\begin{center}
+\begin{tabular}{|p{7cm}|l|}
+\hline
+ Operators                               &  Associativity  \\
+\hline
+ \verb~() [] -> .~                       &  left to right  \\
+ \verb,! ~ ++ -- + - * & (type) sizeof,  &  right to left  \\
+ \verb~* / %~                            &  left to right  \\
+ \verb~+ -~                              &  left to right  \\
+ \verb~<< >>~                            &  left to right  \\
+ \verb~< <= >= >~                        &  left to right  \\
+ \verb~== !=~                            &  left to right  \\
+ \verb~&~                                &  left to right  \\
+ \verb~^~                                &  left to right  \\
+ $\vert$                                 &  left to right  \\
+ \verb~&&~                               &  left to right  \\
+ $\vert\vert$                            &  left to right  \\
+ \verb~?:~                               &  right to left  \\
+ \verb~= += -=~ etc.                     &  right to left  \\
+ ,                                       &  left to right  \\
+\hline
+\end{tabular}
+\end{center}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Operator Precedence -- Examples}
+\label{sec-1-24}
+
+\begin{itemize}
+\item From the table, find the output of each, when \verb~a = 2~, \verb~b = 3~, \verb~c = 4~
+\begin{itemize}
+\item \verb~a + b<<3 + c~
+\item \verb~a ^ b & 5 + c * 3~
+\item \verb~(a ^ b) & (5 + c) * 3~
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\end{document}

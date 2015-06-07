@@ -1,0 +1,551 @@
+\documentclass[11pt]{beamer}
+
+      \usepackage{hyperref}
+
+      \usepackage{color}
+
+      \usepackage{amsmath}
+
+      \usepackage{listings}
+      \lstset{numbers=none,language=[ISO]C++,tabsize=4,
+  frame=single,
+  basicstyle=\small,
+  showspaces=false,showstringspaces=false,
+  showtabs=false,
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{red},
+  }
+
+      \usepackage{verbatim}
+
+\usepackage{fixltx2e}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{soul}
+\usepackage{textcomp}
+\usepackage{marvosym}
+\usepackage{wasysym}
+\usepackage{latexsym}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\tolerance=1000
+\usepackage{minted}
+\providecommand{\alert}[1]{\textbf{#1}}
+
+\title{module4}
+\author{gar}
+\date{}
+\hypersetup{
+  pdfkeywords={},
+  pdfsubject={},
+  pdfcreator={Emacs Org-mode version 7.9.3f}}
+
+\begin{document}
+
+\maketitle
+
+\begin{frame}
+\frametitle{Outline}
+\setcounter{tocdepth}{3}
+\tableofcontents
+\end{frame}
+\section{Structures and File Management}
+\label{sec-1}
+\begin{frame}[fragile]\frametitle{Structure}
+\label{sec-1-1}
+
+\begin{itemize}
+\item Used to group data values which are heterogeneous, and the data are related an entity
+\begin{itemize}
+\item Array groups homogeneous data
+\end{itemize}
+\item Structure is declared using \verb~struct~ data type
+\item E.g. To store a student name, roll number and branch, a structure can be defined as:
+
+\begin{minted}[]{C}
+struct student {
+  char name[20];
+  int rollno;
+  char branch[20];
+};
+\end{minted}
+\item \verb~name~, \verb~rollno~ and \verb~branch~ are called the \emph{members} of the structure, which can be of any data type
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{General Form of \verb~struct~ definition}
+\label{sec-1-2}
+
+
+\begin{minted}[]{C}
+struct struct_tag {
+  type_1 var_1;
+  type_2 var_2;
+  .
+  .
+  type_n var_n;
+} structvar1, structvar2;
+\end{minted}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Accessing members of a structure}
+\label{sec-1-3}
+
+\begin{itemize}
+\item A dot operator is used to access the members
+\item E.g. consider a struct \verb~point~ used to store x and y coordinates of a point:
+
+\begin{minted}[]{C}
+struct point {
+  int x;
+  int y;
+};
+\end{minted}
+\item Declare and initialize a variable \verb~p~ 
+
+\begin{minted}[]{C}
+struct point p = {1,2};
+\end{minted}
+\item To print value x of p
+
+\begin{minted}[]{C}
+printf("%d\n", p.x);
+\end{minted}
+\item To set a new value of x
+
+\begin{minted}[]{C}
+p.x = 5;
+\end{minted}
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Questions}
+\label{sec-1-4}
+
+\begin{enumerate}
+\item Define a structure \verb~book~, which must store the title of the book, author name, year of publication and the publisher's name
+\item Define a structure \verb~rectangle~, which stores two \verb~point~ structures (nested structure), to indicate the bottom left and top right points of a rectangle
+\end{enumerate}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Nested Structure}
+\label{sec-1-5}
+
+\begin{itemize}
+\item Defining a \verb~rectangle~ structure (initializing and accessing the values)
+\end{itemize}
+
+
+\begin{minted}[]{C}
+struct rectangle {
+    struct point p1; /* bottom-left */
+    struct point p2; /* top-right */
+};
+
+int main()
+{
+    struct rectangle r = {{1,2},{5,5}};
+    printf("%d %d\n", r.p1.x, r.p1.y);
+    printf("%d %d\n", r.p2.x, r.p2.y);
+}
+\end{minted}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Array of Structures}
+\label{sec-1-6}
+
+\begin{itemize}
+\item Array of struct data type is also possible:
+\begin{itemize}
+\item E.g. 
+
+\begin{minted}[]{C}
+struct point p[10];
+\end{minted}
+   declares an array of 10 points, and reading of the data can be done using dot operator
+
+\begin{minted}[]{C}
+for (i=0; i<10; i++)
+  scanf("%d%d", &p[i].x, &p[i].y);
+\end{minted}
+\end{itemize}
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Structure and Function}
+\label{sec-1-7}
+
+\begin{itemize}
+\item When passing a structure to a function, it's passed by value instead of reference
+\item Changing values in the called function will not change the structure variables in the calling function
+\item E.g.
+
+\begin{minted}[]{C}
+void set(struct point p, int x, int y)
+{
+  p.x = x;
+  p.y = y;
+}
+main()
+{
+  struct point a;
+  set(a, x, y);
+}
+\end{minted}
+  will not set the values of \verb~a~, since a copy of the structure is sent instead of the address
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Structure and Function}
+\label{sec-1-8}
+
+\begin{itemize}
+\item To set the values of a structure, pass by reference and use \verb~->~ operator
+
+\begin{minted}[]{C}
+void set(struct point *p, int x, int y)
+{
+  p->x = x; /* (*p).x = x; also is fine */
+  p->y = y;
+}
+main()
+{
+  struct point a;
+  set(&a, x, y);
+}
+\end{minted}
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Sending Array of Structures as Parameter}
+\label{sec-1-9}
+
+
+\begin{minted}[]{C}
+struct candidate {
+    char name[50];
+    int age;
+};
+void read_data(struct candidate c[], int n)
+{
+    int i;
+    for (i=0; i<n; i++) {
+        scanf("%s", c[i].name);
+        scanf("%d", &c[i].age);
+    }
+}
+int main ()
+{
+    struct candidate cand[10];
+    read_data(cand, 2);
+    return 0;
+}
+\end{minted}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Type Definitions}
+\label{sec-1-10}
+
+\begin{itemize}
+\item C provides a keyword \verb~typedef~ for creating new data type names
+\item E.g. If we are going to use \verb~short int~ to store dimensions of rectangles, \verb~typedef~ can be used
+
+\begin{minted}[]{C}
+typedef short int Length;
+\end{minted}
+\item Then we may use the data type \verb~Length~ instead of \verb~short int~
+
+\begin{minted}[]{C}
+Length h, w; /* represents height and width */
+\end{minted}
+\item It depicts the intentions of the variables more clearly
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Type Definitions}
+\label{sec-1-11}
+
+\begin{itemize}
+\item As another example, a structure can be typedef in two ways
+
+\begin{minted}[]{C}
+struct point {
+  int x;
+  int y;
+};
+typedef struct point Point;
+\end{minted}
+\item or 
+
+\begin{minted}[]{C}
+typedef struct point {
+  int x;
+  int y;
+} Point; /* In this case, point tag is optional */
+\end{minted}
+\item We may use the new data type to declare point structures
+
+\begin{minted}[]{C}
+main()
+{
+  Point p = {1,5};
+  ...
+}
+\end{minted}
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{File Management}
+\label{sec-1-12}
+
+\begin{itemize}
+\item A file is a collection of data stored on disk
+\item C provides with several functions to work with files
+\item A file must be opened by using the function \verb~fopen~, which returns a pointer to the opened file
+\begin{itemize}
+\item it's called a \emph{file pointer}
+\end{itemize}
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Opening a File}
+\label{sec-1-13}
+
+\begin{itemize}
+\item General form of a call to \verb~fopen~ is
+
+\begin{minted}[]{C}
+filepointer = fopen(filename, mode);
+\end{minted}
+\item Example usage, to open a file \verb~names.txt~ in \verb~read-only~ mode:
+
+\begin{minted}[]{C}
+/* Opened in read-mode, other modes: "w", "a" */
+FILE *fp = fopen("names.txt", "r"); 
+if (fp == NULL)
+  printf("Error opening the file\n");
+\end{minted}
+\item If the file is not found, or necessary permissions are not there for the program, a NULL pointer will be returned
+\item Otherwise, a pointer to that file will be returned
+\item ``w'' opens a file to write. If the file already exists, it will be overwritten, otherwise it will be created
+\item ``a'' opens a file to append. If the file already exists, it will append output to end of the file, otherwise it will be created
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Output using fprintf}
+\label{sec-1-14}
+
+\begin{itemize}
+\item General form:
+
+\begin{minted}[]{C}
+fprintf(destfile, "format string", list of variables);
+\end{minted}
+\item Sending output to a file
+
+\begin{minted}[]{C}
+FILE *fo;
+int num = 119;
+
+fo = fopen("nums.txt", "w"); 
+if (fo != NULL)
+  fprintf(fo, "%d\n", num);
+\end{minted}
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Input using fscanf}
+\label{sec-1-15}
+
+\begin{itemize}
+\item General form
+
+\begin{minted}[]{C}
+fscanf(sourcefile, "format string", list of variables);
+\end{minted}
+\item Receiving input from a file
+
+\begin{minted}[]{C}
+FILE *fi;
+int num;
+
+fi = fopen("nums.txt", "r");
+if (fi != NULL)
+  fscanf(fi, "%d", &num);
+\end{minted}
+\item This reads a number from the file \verb~nums.txt~ and stores in the variable num
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{\verb~stdin~ and \verb~stdout~}
+\label{sec-1-16}
+
+\begin{itemize}
+\item \verb~stdin~ is called an input stream (standard input) and \verb~stdout~ is the output stream (standard output)
+\item The two statements below mean the same
+
+\begin{minted}[]{C}
+fscanf(stdin, "%d", &num);
+scanf("%d", &num);
+\end{minted}
+\item Similarly, the two statements below mean the same
+
+\begin{minted}[]{C}
+fprintf(stdout, "%d", num);
+printf("%d", num);
+\end{minted}
+\item Every program is provided with these pointers by default
+\item Another stream is available, which is called \verb~stderr~, mainly used for redirecting error and diagnostic messages
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Closing files}
+\label{sec-1-17}
+
+\begin{itemize}
+\item After a file is used, it must be closed
+\item It's general form is
+
+\begin{minted}[]{C}
+fclose(filepointer);
+\end{minted}
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{String input from a file}
+\label{sec-1-18}
+
+
+\begin{minted}[]{C}
+strptr = fgets(inputarea, n, source);
+\end{minted}
+\begin{itemize}
+\item Example
+
+\begin{minted}[]{C}
+char inarea[15];
+char *instring;
+
+instring = fgets(inarea, 15, stdin);
+\end{minted}
+\item fgets reads at most 14 characters, then appends one NULL character
+\begin{itemize}
+\item If the entered string is : ``Hello, world string''
+\item The string stored will be
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+\hline
+ H  &  e  &  l  &  l  &  o  &  ,  &     &  w  &  o  &  r  &  l  &  d  &     &  s  &  \textbackslash 0  \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\end{itemize}
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{String output to a file}
+\label{sec-1-19}
+
+\begin{itemize}
+\item General form
+
+\begin{minted}[]{C}
+fputs(string, destfile);
+\end{minted}
+\item Example: echoing back whatever is typed
+
+\begin{minted}[]{C}
+char inarea[20];
+char *instring;
+
+instring = fgets(inarea, 20, stdin);
+while (instring != NULL) {
+  fputs(instring, stdout);
+  instring = fgets(inarea, 20, stdin);
+}
+\end{minted}
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{File I/O for characters: fgetc}
+\label{sec-1-20}
+
+\begin{itemize}
+\item General form of \verb~fgetc~
+
+\begin{minted}[]{C}
+ch = fgetc(source);
+\end{minted}
+\item Reads character from a file pointed by source
+\item Returns character converted to \verb~int~, or \verb~EOF~ at the end of file
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{File I/O for characters: fputc}
+\label{sec-1-21}
+
+\begin{itemize}
+\item General form of \verb~fputc~
+
+\begin{minted}[]{C}
+fputc(ch, destfile);
+\end{minted}
+\item \verb~ch~ is a character, and \verb~destfile~ is a pointer to a file or stdout
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Example Programs}
+\label{sec-1-22}
+
+\begin{enumerate}
+\item Write a program to replace all the letter `a' with letter `A', where the text is read from ``indata.txt'' and the output is stored in ``outdata.txt''
+\item Write a program to count the number of full stops and commas in the file named ``howmany.txt'', and display the result in the terminal
+\end{enumerate}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Program 1}
+\label{sec-1-23}
+
+{\scriptsize 
+
+\begin{minted}[]{C}
+#include <stdio.h>
+
+int main()
+{
+    FILE *fi = fopen("indata.txt", "r");
+    FILE *fo = fopen("outdata.txt", "w");
+    int ch;
+    if (fo != NULL) {
+        ch = fgetc(fi);
+        while (ch != EOF) {
+            if (ch == 'a') {
+                fputc('A', fo);
+            } else {
+                fputc(ch, fo);
+            }
+            ch = fgetc(fi);
+        }
+    }
+    fclose(fi);
+    fclose(fo);
+    return 0;
+}
+\end{minted}
+}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Program 2}
+\label{sec-1-24}
+
+{\scriptsize 
+
+\begin{minted}[]{C}
+#include <stdio.h>
+
+int main()
+{
+    FILE *fi;
+    int comma = 0, dots = 0, ch;
+    fi = fopen("howmany.txt", "r");
+    if (fi != NULL) {
+        ch = fgetc(fi);
+        while (ch != EOF) {
+            if (ch == '.')
+                dots++;
+            if (ch == ',')
+                comma++;
+            ch = fgetc(fi);
+        }
+    }
+    fclose(fi);
+    printf("commas: %d, full stops: %d\n", comma, dots);
+    return 0;
+}
+\end{minted}
+}
+\end{frame}
+
+\end{document}

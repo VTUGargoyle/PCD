@@ -1,0 +1,611 @@
+\documentclass[11pt]{beamer}
+
+      \usepackage{hyperref}
+
+      \usepackage{color}
+
+      \usepackage{amsmath}
+
+      \usepackage{listings}
+      \lstset{numbers=none,language=[ISO]C++,tabsize=4,
+  frame=single,
+  basicstyle=\small,
+  showspaces=false,showstringspaces=false,
+  showtabs=false,
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{red},
+  }
+
+      \usepackage{verbatim}
+
+\usepackage{fixltx2e}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{soul}
+\usepackage{textcomp}
+\usepackage{marvosym}
+\usepackage{wasysym}
+\usepackage{latexsym}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\tolerance=1000
+\usepackage{minted}
+\providecommand{\alert}[1]{\textbf{#1}}
+
+\title{module5}
+\author{gar}
+\date{}
+\hypersetup{
+  pdfkeywords={},
+  pdfsubject={},
+  pdfcreator={Emacs Org-mode version 7.9.3f}}
+
+\begin{document}
+
+\maketitle
+
+\begin{frame}
+\frametitle{Outline}
+\setcounter{tocdepth}{3}
+\tableofcontents
+\end{frame}
+\section{Pointers and Preprocessors}
+\label{sec-1}
+\begin{frame}[fragile]\frametitle{Pointers}
+\label{sec-1-1}
+
+\begin{itemize}
+\item Pointer is a variable that contains the address of a variable
+\item The memory addresses are numbered consecutively
+\item A \verb~char~ variable takes one byte of memory, and can be located anywhere in memory
+\item A \verb~short int~ is stored in a pair of adjacent bytes of memory
+\item An \verb~int~ is stored in four adjacent bytes of memory
+\item In 32-bit addressable systems, \verb~long~ also takes four bytes
+\item In 64-bit addressable systems, \verb~long~ takes eight bytes
+\item This piece of information is critical when dealing with pointers
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Syntax to use Pointers}
+\label{sec-1-2}
+
+\begin{itemize}
+\item \begin{minted}[]{C}
+char ch = 'a';
+char *pc = &ch;
+printf("%c, %u, %c\n", ch, pc, *pc)
+\end{minted}
+\item The above set of instructions print `a' (the value in \verb~ch~), the address of \verb~ch~, and again `a'
+\item Unary \verb~&~ operator gives the address of a variable
+\begin{itemize}
+\item but binary \verb~&~ performs \verb~bitwise-and~ of two variables
+\end{itemize}
+\item Unary \verb~*~ operator is called the dereferencing operator, which when applied to a pointer, it accesses the object the pointer points to
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Examples on Pointers}
+\label{sec-1-3}
+
+\begin{itemize}
+\item \begin{minted}[]{C}
+char c = 'C';
+int i = 256;
+char *pc = &c;
+char *pi = &i;
+printf("%d\n", *pi);
+\end{minted}
+\item In the example, \verb~char *pc~ means that \verb~pc~ points to a character
+\item But \verb~pi~ also has been declared as a pointer to a character
+\item The compilation is possible, but a warning like ``incompatible pointer type'' will be issued
+\item Whatever variable a pointer points to, the size of all the pointers will be the same
+\begin{itemize}
+\item because they contain address, which will be 32 bits or 64 bits depending on the compiler and the OS
+\end{itemize}
+\item The incompatible pointer will cause problems when dereferencing
+\item In the example, 0 is printed instead of 256
+\begin{itemize}
+\item because $256=2^8$, which means $100000000$ in binary
+\item and only the last 8 bits are accessed since we have declared it as a pointer to a \verb~char~
+\end{itemize}
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Pointers and Function Arguments}
+\label{sec-1-4}
+
+\begin{itemize}
+\item Pointers can be used to access elements in another function
+\item Consider a function \verb~inc5~ supposed to increment a variable by 5 
+
+\begin{minted}[]{C}
+void inc5(int i)
+{ 
+  i = i+5;
+}
+\end{minted}
+\item If we call \verb~inc5(a)~, variable \verb~a~ will not be incremented since a copy of \verb~a~ is passed (pass by value)
+\item Now, modify the function
+
+\begin{minted}[]{C}
+void inc5(int *i)
+{ 
+  *i = *i+5;
+}
+\end{minted}
+\item If we call \verb~inc5(&a)~, variable \verb~a~ will be incremented since address of \verb~a~ is passed (pass by reference)
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Pointers and Arrays}
+\label{sec-1-5}
+
+\begin{itemize}
+\item An array \verb~a~ defined as
+
+\begin{minted}[]{C}
+int a[5] = {10, 20, 30, 40, 50};
+\end{minted}
+  will contain the address of the first element
+\item \verb~a[1]~ will access the next element
+\begin{itemize}
+\item which is same as \verb~*(a+1)~
+\end{itemize}
+\item We may define a pointer to array 
+
+\begin{minted}[]{C}
+int *pa = &a[0]; /* points to first element of a */
+int *pa2 = a;    /* also means the same */
+\end{minted}
+\item The only difference is that the pointer is a variable, whereas the array name is not
+\begin{itemize}
+\item So, \verb~pa++;~ will point to the next element, but \verb~a++;~ is an error since \verb~a~ cannot change
+\end{itemize}
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Address Arithmetic}
+\label{sec-1-6}
+
+\begin{itemize}
+\item If \verb~pa~ is a pointer to an array, then \verb~pa++;~ increments the value of \verb~pa~ such that it points to the next element in the array
+\item A small program written and run in a computer will verify it
+
+\begin{minted}[]{C}
+int main ()
+{
+  int a[5] = {1,2,3,4,5};
+  char c[] = "tring";
+  int *pa = a;
+  char *pc = c;
+  printf("%u %u\n", pa,pa+1); /* 3899203328 3899203332 */
+  printf("%u %u\n", pc,pc+1); /* 3899203360 3899203361 */
+  return 0;
+}
+\end{minted}
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Character Pointers and Functions}
+\label{sec-1-7}
+
+\begin{itemize}
+\item We may also have a pointer to a string
+
+\begin{minted}[]{C}
+char a[] = "a string";
+char *ps = "yet another string";
+\end{minted}
+\item \verb~a~ is an array name, which contains the starting address of the string
+\item The string will be stored somewhere in memory, and its starting address will be assigned to \verb~ps~
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Character Pointers and Functions}
+\label{sec-1-8}
+
+\begin{itemize}
+\item Write a function \verb~strlen~ to compute the length of a string using pointers
+
+\begin{minted}[]{C}
+int strlen(char *s)
+{
+    int n;
+    for (n = 0; *s != '\0'; s++)
+        n++;
+    return n;
+}
+\end{minted}
+\item We may then call the function in multiple ways:
+
+\begin{minted}[]{C}
+strlen("hello, strlen"); /* string constant */
+strlen(a);               /* char a[]; */
+strlen(ps);              /* char *ps */
+\end{minted}
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Character Pointers and Functions}
+\label{sec-1-9}
+
+\begin{itemize}
+\item Write a function \verb~strcpy~ to copy a source string to destination string
+
+\begin{minted}[]{C}
+void strcpy(char *s, char *t)
+{
+    while ((*s = *t) != '\0') {
+        s++;
+        t++;
+    }
+}
+\end{minted}
+\item which can be equivalently shortened to
+
+\begin{minted}[]{C}
+void strcpy(char *s, char *t)
+{
+    while ((*s++ = *t++) != '\0') ;
+}
+\end{minted}
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Pointer Arrays}
+\label{sec-1-10}
+
+\begin{itemize}
+\item Since pointers are variables, they can also be stored in arrays
+\item One of the useful applications of such an array is to sort names
+
+\begin{minted}[]{C}
+char *ps[] = {"b1", "a12", "c3"};
+\end{minted}
+\item The three strings are in different memory locations, and the pointer array holds addresses in the order of the strings
+\item Now, to sort names, instead of swapping the complete string character by character, we only swap the first two addresses in the pointer array
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Dynamic Memory Allocation}
+\label{sec-1-11}
+
+\begin{itemize}
+\item Sometimes, the size of the input data will be unknown in advance
+\item Allocating the maximum possible size may waste a lot of space
+\begin{itemize}
+\item E.g. If we are going to get an array of up to 1000 integers, then declaration like \verb~int num[1000];~ can be made,
+\item But, it wastes space if we get lesser number of elements
+\end{itemize}
+\item So, dynamic memory allocation is used, which will allocate space for the variables when it's required
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Dynamic Memory Allocation: \verb~malloc~}
+\label{sec-1-12}
+
+\begin{itemize}
+\item \verb~malloc~ is one function which can allocate space as needed
+\item Its prototype is described in \verb~stdlib.h~
+\item Its usage is:
+
+\begin{minted}[]{C}
+ptr = (type) malloc(size);
+\end{minted}
+\begin{itemize}
+\item \verb~malloc~ returns a pointer to the memory allocated
+\item It's of type \verb~void *~, called a \emph{generic pointer} and must be explicitly typecast to the appropriate data type
+\end{itemize}
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Dynamic Memory Allocation: \verb~malloc~ example}
+\label{sec-1-13}
+
+
+\begin{minted}[]{C}
+struct emp {
+    char name[20];
+    int empnum;
+    double salary;
+};
+struct emp *worker;
+worker = (struct emp *) malloc(sizeof(struct emp));
+
+worker -> empnum = 1;
+\end{minted}
+\begin{itemize}
+\item \verb~sizeof~ returns the required number of bytes for the structure
+\item \verb~malloc~ reserves the space and returns the address of the space, which is converted to the structure data type
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Array of Pointers}
+\label{sec-1-14}
+
+\begin{itemize}
+\item If more than one employee is information is to be stored, an array of pointers can be declared
+
+\begin{minted}[]{C}
+struct emp {
+    char name[20];
+    int empnum;
+    double salary;
+};
+struct emp *worker[20];
+worker[3] = (struct emp *) malloc(sizeof(struct emp));
+
+worker[3] -> empnum = 4;
+\end{minted}
+\item Whenever a new employee is hired, the index value is incremented, which then points to the new employee
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Freeing Memory}
+\label{sec-1-15}
+
+\begin{itemize}
+\item After using the allocated memory, we need to \verb~free~ it so that it can be re-used
+\item Its general form is 
+
+\begin{minted}[]{C}
+free(ptr);
+\end{minted}
+\item \verb~ptr~ must be pointing to some memory address
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Preprocessor Directives}
+\label{sec-1-16}
+
+\begin{itemize}
+\item Just before compiling a program, it involves a preprocessing stage
+\item Preprocessor modifies the source code before it is handed over to the compiler
+\item Such modifications are indicated by preprocessor directives, which are indicated by \verb~#~ symbol
+\item It provides the ability for the inclusion of header files, macro expansions, conditional compilation, etc.
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{\#define directive}
+\label{sec-1-17}
+
+\begin{itemize}
+\item \#define directive is used to substitute some text in the source code
+\item It's also called a macro
+\item The syntax is 
+
+\begin{minted}[]{C}
+#define identifier <substitute text>
+\end{minted}
+\item Example 
+
+\begin{minted}[]{C}
+#define PI 3.14159265359
+\end{minted}
+\begin{itemize}
+\item Replaces every occurance of \verb~PI~ with the defined value
+\end{itemize}
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{(Extra) Checking the Preprocessor Output}
+\label{sec-1-18}
+
+\begin{itemize}
+\item \verb~gcc~ provides with an option \verb~-E~, which enables to see the output of the preprocessing stage
+\item E.g. 
+
+\begin{minted}[]{C}
+/* store program as pi.c */
+#define PI 3.14159265359
+
+int main()
+{
+  printf("%f\n", PI/2);
+  return 0;
+}
+\end{minted}
+\begin{itemize}
+\item \verb~gcc -E pi.c~
+\end{itemize}
+\item Check the output and observe the changes
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Macros with Arguments}
+\label{sec-1-19}
+
+\begin{itemize}
+\item Macros can also receive parameters
+\item E.g.
+
+\begin{minted}[]{C}
+#define DOUBLE(a) (a)*2
+
+int main()
+{
+    printf("%d", DOUBLE(5+3));
+    return 0;
+}
+\end{minted}
+\begin{itemize}
+\item \verb~DOUBLE(5+3)~ is substituted with (5+3)*2 after preprocessing
+\end{itemize}
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Undefining a Macro}
+\label{sec-1-20}
+
+\begin{itemize}
+\item A macro defined with \#define can be undefined using \#undef directive
+\item That macro can then not be used after undefining
+\item Useful when we are trying to redifine a macro to a new value
+\item E.g. to assign an approximate value of pi to a macro \verb~M_PI~ defined in \verb~math.h~
+
+\begin{minted}[]{C}
+#include <math.h>
+#include <stdio.h>
+
+#undef M_PI
+#define M_PI (22/7.0)
+\end{minted}
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{\#include directive}
+\label{sec-1-21}
+
+\begin{itemize}
+\item The \#include directive loads the specified file in the program
+\item The included file is also compiled with the program
+\item Two ways of including
+
+\begin{minted}[]{C}
+#include <filename> /* 1 */
+
+#include "filename" /* 2 */
+\end{minted}
+\item The header files  stored in standard directories will be included if \verb~< >~ is used
+\item The header files stored in current and standard directories will be included if `` `` is used
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Conditional Compilation}
+\label{sec-1-22}
+
+\begin{itemize}
+\item The statements are compiled only if some condition is true
+\item Syntax
+
+\begin{minted}[]{C}
+#ifdef <identifier>
+{
+statements;
+}
+#else
+{
+statements;
+}
+#endif
+\end{minted}
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Conditional Compilation}
+\label{sec-1-23}
+
+\begin{itemize}
+\item E.g.
+\end{itemize}
+{\scriptsize 
+
+\begin{minted}[]{C}
+#include <stdio.h>
+#include <math.h>
+#define E =
+int main()
+{
+    int a;
+    #ifdef E
+    {
+        a E 1;
+    }
+    #else
+    {
+        a = 2;
+    }
+    #endif
+    printf("%d", a);
+    return 0;
+}
+\end{minted}
+}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Data Structures}
+\label{sec-1-24}
+
+\begin{itemize}
+\item Data Structure is a method of storing data in a computer so that it may be used efficiently
+\item Data Structure
+\begin{itemize}
+\item Primitive
+\begin{itemize}
+\item \verb~int~, \verb~char~, \verb~float~ etc.
+\end{itemize}
+\item Non-Primitive
+\begin{itemize}
+\item Linear (Arrays, stacks, queues, linked-lists)
+\item Non-linear (Trees, graphs)
+\end{itemize}
+\end{itemize}
+\end{itemize}
+\begin{itemize}
+\item The basic data type provided by the programming language is called the primitive data type
+\item The data type derived from basic types is called non-primitive data types
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Stack}
+\label{sec-1-25}
+
+\begin{itemize}
+\item Stack is a data structure where the elements are inserted to one end and deleted from the same end
+\item The position where the insertion and deletion happens is called the top of the stack
+\item Also called Last-In-First-Out (LIFO) data structure
+\item Three main stack operations
+\begin{itemize}
+\item Push
+\item Pop
+\item Display
+\end{itemize}
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Queue}
+\label{sec-1-26}
+
+\begin{itemize}
+\item Stack is a data structure where the elements are inserted to one end and deleted from the other end
+\item The end where the elements are inserted is called the rear end
+\item The end where the elements are deleted is called the front end
+\item Also called First-In-First-Out (FIFO) data structure
+\item Operations on queues
+\begin{itemize}
+\item Insert (Enqueue)
+\item Delete (Dequeue)
+\item Display
+\end{itemize}
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Linked List}
+\label{sec-1-27}
+
+\begin{itemize}
+\item A data strucutre which is a collection of zero or more nodes where each node has some information
+\item Node consists two fields
+\begin{itemize}
+\item \verb~info~: which holds some information
+\item \verb~link~: contains the address of the next node
+\end{itemize}
+\item Types of linked list
+\begin{itemize}
+\item Singly linked lists
+\begin{itemize}
+\item Last node's \verb~link~ field will be \verb~NULL~
+\end{itemize}
+\item Doubly linked lists
+\begin{itemize}
+\item Contains two \verb~link~ fields, for right and left nodes
+\end{itemize}
+\item Circular singly linked lists
+\begin{itemize}
+\item Last node's \verb~link~ field will contain the address of the first node
+\end{itemize}
+\item Circular doubly linked lists
+\end{itemize}
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Singly Linked Lists}
+\label{sec-1-28}
+
+\begin{itemize}
+\item Operations on singly linked lists
+\begin{itemize}
+\item Inserting a node
+\item Deleting a node
+\item Search in a list
+\item Display the contents
+\end{itemize}
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]\frametitle{Trees}
+\label{sec-1-29}
+
+\begin{itemize}
+\item Non-empty set of items where one element is called a root, and the remaining items are divided into $n\ge 0$ disjoint subsets,
+  each of which can be a tree
+\item Every item is called a node
+\item Every node can have zero or more branches (subtrees)
+\end{itemize}
+\end{frame}
+
+\end{document}
